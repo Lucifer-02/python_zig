@@ -1,9 +1,2 @@
 .venv*/
-build/
 .idea/
-dist/
-*.egg-info
-*.so
-zig-cache/
-__pycache__
-.eggs
