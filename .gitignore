@@ -2,5 +2,5 @@
 .idea/
 .pre-commit-config.yaml
 .python-version
-/zig-cache
-/__pycache__
+zig-cache/
+__pycache__/
