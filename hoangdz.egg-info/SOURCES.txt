@@ -1,6 +1,0 @@
-hoangdzModule.zig
-setup.py
-hoangdz.egg-info/PKG-INFO
-hoangdz.egg-info/SOURCES.txt
-hoangdz.egg-info/dependency_links.txt
-hoangdz.egg-info/top_level.txt
