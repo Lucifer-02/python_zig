@@ -4,3 +4,5 @@
 .python-version
 zig-cache/
 __pycache__/
+hoangdz.egg-info/
+build/

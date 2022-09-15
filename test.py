@@ -6,10 +6,10 @@ assert not failed
 import hoangdz
 
 
-a = input("nhap a: ")
-b = input("nhap b: ")
-print("tong: ",hoangdz.sum(int(a),int(b)))
-print("tich: ",hoangdz.mul(int(a),int(b)))
+a = input("enter a: ")
+b = input("enter b: ")
+print("sum: ",hoangdz.sum(int(a),int(b)))
+print("multiple: ",hoangdz.mul(int(a),int(b)))
 print("type sum: ", type(hoangdz.sum(int(a),int(b))))
 hoangdz.hello()
 hoangdz.printSt("this is zig lang")
