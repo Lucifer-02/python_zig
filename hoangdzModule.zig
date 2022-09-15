@@ -11,10 +11,11 @@ const PyModuleDef_Base = py.PyModuleDef_Base;
 const Py_BuildValue = py.Py_BuildValue;
 const PyModule_Create = py.PyModule_Create;
 const METH_NOARGS = py.METH_NOARGS;
+const PyArg_ParseTuple = py.PyArg_ParseTuple;
+const PyLong_FromLong = py.PyLong_FromLong;
 
 fn sum(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     _ = self;
-    _ = args;
     var a: c_long = undefined;
     var b: c_long = undefined;
     if (!(py._PyArg_ParseTuple_SizeT(args, "ll", &a, &b) != 0)) return Py_BuildValue("");
@@ -23,18 +24,25 @@ fn sum(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
 
 fn mul(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     _ = self;
-    _ = args;
     var a: c_long = undefined;
     var b: c_long = undefined;
-    if (!(py._PyArg_ParseTuple_SizeT(args, "ll", &a, &b) != 0)) return Py_BuildValue("");
-    return py.PyLong_FromLong((a * b));
+    if (PyArg_ParseTuple(args, "ll", &a, &b) == 0) return Py_BuildValue("");
+    return PyLong_FromLong((a * b));
 }
 
 fn hello(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     _ = self;
     _ = args;
     print("welcom to ziglang\n", .{});
-    return Py_BuildValue("i", @as(c_int, 125));
+    return Py_BuildValue("");
+}
+
+fn printSt(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+    _ = self;
+    var input: [*:0]u8 = undefined;
+    if (PyArg_ParseTuple(args, "s", &input) == 0) return Py_BuildValue("");
+    print("you entered: {s}\n", .{input});
+    return Py_BuildValue("");
 }
 
 var Methods = [_]PyMethodDef{
@@ -54,6 +62,12 @@ var Methods = [_]PyMethodDef{
         .ml_name = "hello",
         .ml_meth = hello,
         .ml_flags = METH_NOARGS,
+        .ml_doc = null,
+    },
+    PyMethodDef{
+        .ml_name = "printSt",
+        .ml_meth = printSt,
+        .ml_flags = @as(c_int, 1),
         .ml_doc = null,
     },
     PyMethodDef{
