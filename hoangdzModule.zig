@@ -2,7 +2,8 @@ const py = @cImport({
     @cDefine("PY_SSIZE_T_CLEAN", {});
     @cInclude("Python.h");
 });
-const print = @import("std").debug.print;
+const std = @import("std");
+const print = std.debug.print;
 
 const PyObject = py.PyObject;
 const PyMethodDef = py.PyMethodDef;
@@ -45,6 +46,21 @@ fn printSt(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     return Py_BuildValue("");
 }
 
+fn returnArrayWithInput(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+    _ = self;
+
+    var N: u32 = undefined;
+    if (!(py._PyArg_ParseTuple_SizeT(args, "l", &N) != 0)) return Py_BuildValue("");
+    var list: [*c]PyObject = py.PyList_New(N);
+
+    var i: u32 = 0;
+    while (i < N) : (i += 1) {
+        const python_int: [*c]PyObject = Py_BuildValue("i", i);
+        _ = py.PyList_SetItem(list, i, python_int);
+    }
+    return list;
+}
+
 var Methods = [_]PyMethodDef{
     PyMethodDef{
         .ml_name = "sum",
@@ -67,6 +83,12 @@ var Methods = [_]PyMethodDef{
     PyMethodDef{
         .ml_name = "printSt",
         .ml_meth = printSt,
+        .ml_flags = @as(c_int, 1),
+        .ml_doc = null,
+    },
+    PyMethodDef{
+        .ml_name = "returnArrayWithInput",
+        .ml_meth = returnArrayWithInput,
         .ml_flags = @as(c_int, 1),
         .ml_doc = null,
     },
