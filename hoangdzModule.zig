@@ -51,7 +51,7 @@ fn returnArrayWithInput(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]
 
     var N: u32 = undefined;
     if (!(py._PyArg_ParseTuple_SizeT(args, "l", &N) != 0)) return Py_BuildValue("");
-    var list: [*c]PyObject = py.PyList_New(N);
+    const list: [*c]PyObject = py.PyList_New(N);
 
     var i: u32 = 0;
     while (i < N) : (i += 1) {

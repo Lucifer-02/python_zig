@@ -11,7 +11,7 @@ class ZigBuilder(build_ext):
         mode = "Debug" if self.debug else "ReleaseFast"
         self.spawn(
             [
-                "/media/lucifer/STORAGE/IMPORTANTS/CODE/Zig/zig-dev/zig",
+                "zig",# your zig compiler binary path
                 "build-lib",
                 "-O",
                 mode,
