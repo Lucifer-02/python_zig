@@ -1,7 +1,7 @@
 from setuptools import setup, Extension
 from builder import ZigBuilder
 
-hoangdz = Extension("hoangdz", sources=["hoangdzModule.zig"])
+hoangdz = Extension("hoangdz", sources=["./my_module.zig"])
 
 setup(
     name="hoangdz",

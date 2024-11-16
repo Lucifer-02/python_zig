@@ -6,11 +6,11 @@ assert not failed
 import hoangdz
 
 
-a = input("enter a: ")
-b = input("enter b: ")
-print("sum: ",hoangdz.sum(int(a),int(b)))
-print("multiple: ",hoangdz.mul(int(a),int(b)))
-print("type sum: ", type(hoangdz.sum(int(a),int(b))))
+a = int(input("enter a: "))
+b = int(input("enter b: "))
+print("sum: ",hoangdz.sum(a,b))
+print("multiple: ",hoangdz.mul(a,b))
+print("type sum: ", type(hoangdz.sum(a,b)))
 hoangdz.hello()
 hoangdz.printSt(input("enter something: "))
-print(hoangdz.returnArrayWithInput(100))
+print("Array: ", hoangdz.returnArrayWithInput(100))
