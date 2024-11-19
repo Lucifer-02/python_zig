@@ -8,7 +8,9 @@ class ZigBuilder(build_ext):
 
         if not os.path.exists(self.build_lib):
             os.makedirs(self.build_lib)
+
         mode = "Debug" if self.debug else "ReleaseFast"
+
         self.spawn(
             [
                 "zig",# your zig compiler binary path
@@ -17,7 +19,6 @@ class ZigBuilder(build_ext):
                 mode,
                 "-lc",
                 f"-femit-bin={self.get_ext_fullpath(ext.name)}",
-                # "-fallow-shlib-undefined",
                 "-dynamic",
                 *[f"-I{d}" for d in self.include_dirs],
                 ext.sources[0],
