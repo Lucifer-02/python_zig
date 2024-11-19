@@ -3,6 +3,6 @@
 2. test package: `python3 test.py`
 
 ## Result after running test.py
-![image](https://user-images.githubusercontent.com/84069686/192076448-ba90e8ca-2737-4597-8c04-20ad1e25cf70.png)
+![image](https://github.com/user-attachments/assets/384d089e-932c-446b-9b77-d248e5eb2708)
 
 ### Main ideas from [here](https://pypi.org/project/setuptools-zig/) and [here](https://github.com/adamserafini/zaml)
