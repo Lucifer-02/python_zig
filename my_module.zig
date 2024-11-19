@@ -34,7 +34,7 @@ fn mul(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
 fn hello(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     _ = self;
     _ = args;
-    print("welcom to ziglang\n", .{});
+    print("Welcome to ziglang!!!\n", .{});
     return Py_BuildValue("");
 }
 
@@ -42,7 +42,7 @@ fn printSt(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     _ = self;
     var input: [*:0]u8 = undefined;
     if (PyArg_ParseTuple(args, "s", &input) == 0) return Py_BuildValue("");
-    print("you entered: {s}\n", .{input});
+    print("You entered: {s}\n", .{input});
     return Py_BuildValue("");
 }
 
