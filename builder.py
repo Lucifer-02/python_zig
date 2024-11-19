@@ -17,7 +17,7 @@ class ZigBuilder(build_ext):
                 mode,
                 "-lc",
                 f"-femit-bin={self.get_ext_fullpath(ext.name)}",
-                "-fallow-shlib-undefined",
+                # "-fallow-shlib-undefined",
                 "-dynamic",
                 *[f"-I{d}" for d in self.include_dirs],
                 ext.sources[0],
