@@ -9,7 +9,8 @@ class ZigBuilder(build_ext):
         if not os.path.exists(self.build_lib):
             os.makedirs(self.build_lib)
 
-        mode = "Debug" if self.debug else "ReleaseFast"
+        # mode = "Debug" if self.debug else "ReleaseFast"
+        mode = "ReleaseFast"
 
         self.spawn(
             [

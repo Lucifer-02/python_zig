@@ -15,12 +15,50 @@ const METH_NOARGS = py.METH_NOARGS;
 const PyArg_ParseTuple = py.PyArg_ParseTuple;
 const PyLong_FromLong = py.PyLong_FromLong;
 
+fn add(a: i64, b: i64) i64 {
+    return a + b;
+}
+
+fn sum2(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+    _ = self;
+    var py_list: *PyObject = undefined;
+
+    // Parse the argument
+    if (PyArg_ParseTuple(args, "O", &py_list) == 0) {
+        return Py_BuildValue("");
+    }
+
+    // Check if the object is a list
+    if (py.PyList_Check(py_list) == 0) {
+        py.PyErr_SetString(py.PyExc_TypeError, "Input must be a list");
+        return Py_BuildValue("");
+    }
+
+    // Get the length of the list
+    const length: py.Py_ssize_t = py.PyList_Size(py_list);
+
+    var s: c_long = 0;
+    var i: py.Py_ssize_t = 0;
+    // Iterate through the list
+    while (i < length) : (i += 1) {
+        const item: *PyObject = py.PyList_GetItem(py_list, i);
+
+        // Check if the item is an integer
+        if (py.PyLong_Check(item) == 1) {
+            s += py.PyLong_AsLong(item);
+        }
+    }
+
+    // Return the result as a Python object
+    return PyLong_FromLong(s);
+}
+
 fn sum(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     _ = self;
     var a: c_long = undefined;
     var b: c_long = undefined;
     if (!(py._PyArg_ParseTuple_SizeT(args, "ll", &a, &b) != 0)) return Py_BuildValue("");
-    return py.PyLong_FromLong((a + b));
+    return py.PyLong_FromLong(add(a, b));
 }
 
 fn mul(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
@@ -62,6 +100,12 @@ fn returnArrayWithInput(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]
 }
 
 var Methods = [_]PyMethodDef{
+    PyMethodDef{
+        .ml_name = "sum2",
+        .ml_meth = sum2,
+        .ml_flags = @as(c_int, 1),
+        .ml_doc = null,
+    },
     PyMethodDef{
         .ml_name = "sum",
         .ml_meth = sum,
