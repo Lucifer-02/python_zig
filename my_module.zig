@@ -103,37 +103,48 @@ var Methods = [_]PyMethodDef{
     PyMethodDef{
         .ml_name = "sum2",
         .ml_meth = sum2,
-        .ml_flags = @as(c_int, 1),
-        .ml_doc = null,
+        .ml_flags = py.METH_VARARGS,
+        .ml_doc =
+        \\sum(data)
+        \\--
+        \\
+        \\Sum a list of integers
+        ,
     },
     PyMethodDef{
         .ml_name = "sum",
         .ml_meth = sum,
-        .ml_flags = @as(c_int, 1),
-        .ml_doc = null,
+        .ml_flags = py.METH_VARARGS | py.METH_KEYWORDS,
+        // .ml_doc = "sum(a,b)\n--\n\nGreat example function",
+        .ml_doc =
+        \\sum(a,b)
+        \\--
+        \\
+        \\Calculation sum of 2 numbers
+        ,
     },
     PyMethodDef{
         .ml_name = "mul",
         .ml_meth = mul,
-        .ml_flags = @as(c_int, 1),
+        .ml_flags = py.METH_VARARGS,
         .ml_doc = null,
     },
     PyMethodDef{
         .ml_name = "hello",
         .ml_meth = hello,
-        .ml_flags = METH_NOARGS,
+        .ml_flags = py.METH_NOARGS,
         .ml_doc = null,
     },
     PyMethodDef{
         .ml_name = "printSt",
         .ml_meth = printSt,
-        .ml_flags = @as(c_int, 1),
+        .ml_flags = py.METH_VARARGS,
         .ml_doc = null,
     },
     PyMethodDef{
         .ml_name = "returnArrayWithInput",
         .ml_meth = returnArrayWithInput,
-        .ml_flags = @as(c_int, 1),
+        .ml_flags = py.METH_VARARGS,
         .ml_doc = null,
     },
     PyMethodDef{
@@ -155,7 +166,7 @@ var module = PyModuleDef{
         .m_copy = null,
     },
     .m_name = "hoangdz",
-    .m_doc = null,
+    .m_doc = "experiment create python module in Zig",
     .m_size = -1,
     .m_methods = &Methods,
     .m_slots = null,
