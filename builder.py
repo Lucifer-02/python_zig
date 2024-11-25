@@ -12,6 +12,7 @@ class ZigBuilder(build_ext):
         # mode = "Debug" if self.debug else "ReleaseFast"
         mode = "ReleaseFast"
 
+
         self.spawn(
             [
                 "zig",# your zig compiler binary path

@@ -9,29 +9,52 @@ const PyObject = py.PyObject;
 const PyMethodDef = py.PyMethodDef;
 const PyModuleDef = py.PyModuleDef;
 const PyModuleDef_Base = py.PyModuleDef_Base;
-const Py_BuildValue = py.Py_BuildValue;
+const Py_BuildValue = py.Py_BuildValue; // create Python None value
 const PyModule_Create = py.PyModule_Create;
 const METH_NOARGS = py.METH_NOARGS;
 const PyArg_ParseTuple = py.PyArg_ParseTuple;
 const PyLong_FromLong = py.PyLong_FromLong;
 
-fn add(a: i64, b: i64) i64 {
+fn zig_add(a: i64, b: i64) i64 {
     return a + b;
 }
 
-fn sum2(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+fn add(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+    _ = self;
+    var a: c_long = undefined;
+    var b: c_long = undefined;
+    if (!(py._PyArg_ParseTuple_SizeT(args, "ll", &a, &b) != 0)) return Py_BuildValue("");
+    return py.PyLong_FromLong(zig_add(a, b));
+}
+
+// Function to add two numbers
+export fn add1(self: ?*py.PyObject, args: ?*py.PyObject) ?*py.PyObject {
+    _ = self;
+    var a: c_int = 0;
+    var b: c_int = 0;
+
+    // Parse the Python arguments (two integers)
+    if (py.PyArg_ParseTuple(args, "ii", &a, &b) == 0) {
+        return null;
+    }
+
+    // Return the result as a Python object
+    return py.PyLong_FromLong(zig_add(a, b));
+}
+
+export fn sum_list(self: ?*PyObject, args: ?*PyObject) ?*PyObject {
     _ = self;
     var py_list: *PyObject = undefined;
 
     // Parse the argument
     if (PyArg_ParseTuple(args, "O", &py_list) == 0) {
-        return Py_BuildValue("");
+        return null;
     }
 
     // Check if the object is a list
     if (py.PyList_Check(py_list) == 0) {
         py.PyErr_SetString(py.PyExc_TypeError, "Input must be a list");
-        return Py_BuildValue("");
+        return null;
     }
 
     // Get the length of the list
@@ -53,15 +76,7 @@ fn sum2(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     return PyLong_FromLong(s);
 }
 
-fn sum(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
-    _ = self;
-    var a: c_long = undefined;
-    var b: c_long = undefined;
-    if (!(py._PyArg_ParseTuple_SizeT(args, "ll", &a, &b) != 0)) return Py_BuildValue("");
-    return py.PyLong_FromLong(add(a, b));
-}
-
-fn mul(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+export fn mul(self: ?*PyObject, args: ?*PyObject) ?*PyObject {
     _ = self;
     var a: c_long = undefined;
     var b: c_long = undefined;
@@ -69,14 +84,15 @@ fn mul(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     return PyLong_FromLong((a * b));
 }
 
-fn hello(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+export fn hello(self: ?*PyObject, args: ?*PyObject) ?*PyObject {
     _ = self;
     _ = args;
     print("Welcome to ziglang!!!\n", .{});
+
     return Py_BuildValue("");
 }
 
-fn printSt(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+export fn printSt(self: ?*PyObject, args: ?*PyObject) ?*PyObject {
     _ = self;
     var input: [*:0]u8 = undefined;
     if (PyArg_ParseTuple(args, "s", &input) == 0) return Py_BuildValue("");
@@ -84,16 +100,16 @@ fn printSt(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
     return Py_BuildValue("");
 }
 
-fn returnArrayWithInput(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]PyObject {
+export fn returnArrayWithInput(self: ?*PyObject, args: ?*PyObject) ?*PyObject {
     _ = self;
 
     var N: u32 = undefined;
     if (!(py._PyArg_ParseTuple_SizeT(args, "l", &N) != 0)) return Py_BuildValue("");
-    const list: [*c]PyObject = py.PyList_New(N);
+    const list: ?*PyObject = py.PyList_New(N);
 
     var i: u32 = 0;
     while (i < N) : (i += 1) {
-        const python_int: [*c]PyObject = Py_BuildValue("i", i);
+        const python_int: ?*PyObject = Py_BuildValue("i", i);
         _ = py.PyList_SetItem(list, i, python_int);
     }
     return list;
@@ -101,8 +117,8 @@ fn returnArrayWithInput(self: [*c]PyObject, args: [*c]PyObject) callconv(.C) [*]
 
 var Methods = [_]PyMethodDef{
     PyMethodDef{
-        .ml_name = "sum2",
-        .ml_meth = sum2,
+        .ml_name = "sum_list",
+        .ml_meth = sum_list,
         .ml_flags = py.METH_VARARGS,
         .ml_doc =
         \\sum(data)
@@ -112,16 +128,22 @@ var Methods = [_]PyMethodDef{
         ,
     },
     PyMethodDef{
-        .ml_name = "sum",
-        .ml_meth = sum,
-        .ml_flags = py.METH_VARARGS | py.METH_KEYWORDS,
-        // .ml_doc = "sum(a,b)\n--\n\nGreat example function",
+        .ml_name = "add",
+        .ml_meth = add,
+        .ml_flags = py.METH_VARARGS,
+        // .ml_doc = "add(a,b)\n--\n\nGreat example function",
         .ml_doc =
-        \\sum(a,b)
+        \\add(a,b)
         \\--
         \\
         \\Calculation sum of 2 numbers
         ,
+    },
+    PyMethodDef{
+        .ml_name = "add1",
+        .ml_meth = add1,
+        .ml_flags = py.METH_VARARGS,
+        .ml_doc = "Add two numbers",
     },
     PyMethodDef{
         .ml_name = "mul",
