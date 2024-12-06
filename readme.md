@@ -1,6 +1,6 @@
 ## Steps
-1. Export package: `pip install .`
-2. Test package: `python3 test.py`
+1. Export module: `pip install .`
+2. Test module: `python3 test.py`
 
 ## Result after running test.py
 ![image](https://github.com/user-attachments/assets/39d65924-17f7-41f6-b996-1685b178d2ec)
