@@ -1,5 +1,6 @@
 const py = @cImport({
     @cDefine("PY_SSIZE_T_CLEAN", {});
+    // @cInclude("python3.10/Python.h");
     @cInclude("Python.h");
 });
 const std = @import("std");
